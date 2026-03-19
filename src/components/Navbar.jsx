@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
-const Navbar = ({ isAdmin = false }) => {
+const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const userLinks = [
     { to: '/dashboard', label: 'Dashboard' },
@@ -15,10 +17,12 @@ const Navbar = ({ isAdmin = false }) => {
     { to: '/admin', label: 'Admin Dashboard' },
   ];
 
-  const links = isAdmin ? adminLinks : userLinks;
+  const links = user?.role === 'admin' ? adminLinks : userLinks;
 
   const handleLogout = () => {
-    navigate('/login');
+    const role = user?.role;
+    logout();
+    navigate(role === 'admin' ? '/admin-login' : '/login');
   };
 
   return (
@@ -53,13 +57,10 @@ const Navbar = ({ isAdmin = false }) => {
           </div>
 
           <div className="flex items-center space-x-3">
-            {!isAdmin && (
-              <Link
-                to="/admin"
-                className="hidden md:inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-200 hover:text-white transition-colors"
-              >
-                Admin View
-              </Link>
+            {user && (
+              <span className="hidden md:inline text-blue-200 text-sm">
+                {user.name}
+              </span>
             )}
             <button
               onClick={handleLogout}
