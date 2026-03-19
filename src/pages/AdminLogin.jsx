@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import useAuth from '../hooks/useAuth';
 
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate();
   const { login, loading, error } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -14,7 +14,6 @@ const Login = () => {
     if (!form.email) errs.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Enter a valid email';
     if (!form.password) errs.password = 'Password is required';
-    else if (form.password.length < 4) errs.password = 'Minimum 4 characters';
     return errs;
   };
 
@@ -25,9 +24,9 @@ const Login = () => {
       setErrors(errs);
       return;
     }
-    const result = await login(form.email, form.password, 'user');
+    const result = await login(form.email, form.password, 'admin');
     if (result.success) {
-      navigate('/dashboard');
+      navigate('/admin');
     }
   };
 
@@ -37,25 +36,26 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-blue-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-2xl shadow-lg mb-4">
             <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
               />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">GigShield</h1>
-          <p className="text-gray-500 mt-1">AI-Powered Parametric Insurance</p>
+          <h1 className="text-3xl font-bold text-white">GigShield</h1>
+          <p className="text-blue-300 mt-1">Admin Portal</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Welcome back</h2>
-          <p className="text-sm text-gray-500 mb-6">Sign in to your delivery partner account.</p>
+        <div className="bg-white rounded-3xl shadow-2xl p-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Admin Sign In</h2>
+          <p className="text-sm text-gray-500 mb-6">Access restricted to authorized administrators only.</p>
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl">
@@ -65,7 +65,7 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Admin Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ const Login = () => {
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="you@example.com"
+                  placeholder="admin@test.com"
                   className={`w-full pl-10 pr-4 py-3 border ${errors.email ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50`}
                 />
               </div>
@@ -114,32 +114,25 @@ const Login = () => {
                   <span>Signing in…</span>
                 </span>
               ) : (
-                'Sign In'
+                'Sign In as Admin'
               )}
             </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-blue-600 font-semibold hover:underline">
-              Register now
-            </Link>
-          </p>
-
-          <p className="mt-2 text-center text-sm text-gray-500">
-            Admin?{' '}
-            <Link to="/admin-login" className="text-blue-600 font-semibold hover:underline">
-              Admin Login
+            Not an admin?{' '}
+            <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+              User Login
             </Link>
           </p>
 
           {/* Demo hint */}
-          <div className="mt-4 p-3 bg-blue-50 rounded-xl">
-            <p className="text-xs text-blue-600 text-center font-medium">
+          <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p className="text-xs text-slate-600 text-center font-medium">
               Demo credentials
             </p>
-            <p className="text-xs text-blue-500 text-center mt-1">
-              user@test.com &nbsp;/&nbsp; 1234
+            <p className="text-xs text-slate-500 text-center mt-1">
+              admin@test.com &nbsp;/&nbsp; admin123
             </p>
           </div>
         </div>
@@ -148,4 +141,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;
